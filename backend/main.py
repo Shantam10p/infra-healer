@@ -1,11 +1,14 @@
 import logging
 import os
 from fastapi import FastAPI, HTTPException
+from backend.orders import router as orders_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api")
 
 app = FastAPI()
+app.include_router(orders_router)
+
 APP_NAME = os.getenv("APP_NAME", "phase1-api")
 
 @app.get("/")
