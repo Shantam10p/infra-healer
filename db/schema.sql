@@ -6,12 +6,10 @@ CREATE TABLE menu (
 
 CREATE TABLE orders (
     id          SERIAL PRIMARY KEY,
-    first_name  TEXT NOT NULL,
+    first_name  TEXT,
     last_name   TEXT,
-    status      TEXT NOT NULL DEFAULT 'pending'
-                CHECK (status IN ('pending', 'processing', 'ready', 'failed')),
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    status      TEXT DEFAULT 'pending',
+    created_at  TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE TABLE order_items (
