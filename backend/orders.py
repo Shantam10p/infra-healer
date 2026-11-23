@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from backend.db import get_connection
+from backend.redis_client import redis_client
 from backend.schemas.orders import OrderIn
 
 router = APIRouter()
@@ -29,6 +30,7 @@ def post_order(order: OrderIn):
         (new_order["id"], item.drink_id, item.size, item.sugar, item.quantity, menu_row["price"]),
       )
 
+  redis_client.lpush("orders", new_order["id"])
   return new_order
 
 @router.get("/orders/{order_id}")
