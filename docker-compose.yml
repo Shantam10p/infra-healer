@@ -14,6 +14,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   worker:
     build: .
@@ -28,6 +33,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import time; from backend.redis_client import redis_client; assert time.time() - int(redis_client.get('worker:heartbeat') or 0) < 30"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   postgres:
     image: pgvector/pgvector:pg16
