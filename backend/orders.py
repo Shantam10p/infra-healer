@@ -31,6 +31,24 @@ def post_order(order: OrderIn):
 
   return new_order
 
+@router.get("/orders/{order_id}")
+def get_order(order_id: int):
+  with get_connection() as conn:
+    order = conn.execute(
+      "SELECT id, first_name, last_name, status, created_at FROM orders WHERE id = %s", (order_id,)
+    ).fetchone()
+
+    if order is None:
+      raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    items = conn.execute(
+      "SELECT menu.name AS drink, order_items.size, order_items.sugar, order_items.quantity, order_items.price FROM order_items JOIN menu ON menu.id = order_items.drink_id WHERE order_items.order_id = %s",
+      (order_id,),
+    ).fetchall()
+
+  order["items"] = items
+  return order
+
 
 
 
