@@ -39,6 +39,15 @@ services:
       timeout: 3s
       retries: 3
 
+  loadgen:
+    build: .
+    command: python -m backend.loadgen
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      api:
+        condition: service_healthy
+
   postgres:
     image: pgvector/pgvector:pg16
     environment:
