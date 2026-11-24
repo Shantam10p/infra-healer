@@ -2,6 +2,7 @@ import logging
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 from backend.db import get_connection
 from backend.orders import router as orders_router
 from backend.redis_client import redis_client
@@ -11,6 +12,7 @@ logger = logging.getLogger("api")
 
 app = FastAPI()
 app.include_router(orders_router)
+Instrumentator().instrument(app).expose(app)
 
 APP_NAME = os.getenv("APP_NAME", "phase1-api")
 
